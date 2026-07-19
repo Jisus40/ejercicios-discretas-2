@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matemáticas Discretas II — Guía Interactiva</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+    <a href="index.html" class="logo">Matemáticas <span>Discretas II</span></a>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">☀️ / 🌙</button>
+</div>
+
+<div class="container" style="padding-top: 28px;">
+
+    <h1>Guía interactiva</h1>
+    <p class="subtitle">Reticulados y Álgebras de Boole — Dr. Luis Manuel Hernández Ramos</p>
+    <p class="intro-text">Selecciona un tema para comenzar. Cada tema contiene teoría, ejemplos ilustrativos, ejercicios con tips y soluciones paso a paso.</p>
+
+    <div class="grid-3" id="menu-temas">
+        <!-- Los temas se renderizan desde JS -->
+    </div>
+
+    <!-- Footer -->
+    <p class="footer-note">
+        Guía interactiva de Matemáticas Discretas II · UCV<br>
+        Basado en la guía del Dr. Luis Manuel Hernández Ramos
+    </p>
+
+</div>
+
+<script>
+// Catálogo de temas
+const CATALOGO = [
+    {
+        id: "tema1",
+        titulo: "Cotas, ínfimo y supremo",
+        descripcion: "Definiciones básicas de cotas inferiores, superiores, ínfimo y supremo en órdenes parciales.",
+        subtemas: 2,
+        ejercicios: 6,
+        icono: "📐"
+    },
+    {
+        id: "tema2",
+        titulo: "Reticulados",
+        descripcion: "Definición de reticulado, propiedades del ínfimo y supremo, reticulados distributivos y no distributivos.",
+        subtemas: 4,
+        ejercicios: 8,
+        icono: "🔗"
+    },
+    {
+        id: "tema3",
+        titulo: "Álgebras de Boole",
+        descripcion: "Reticulados acotados, complementados y distributivos. Funciones booleanas, tablas de verdad y minimización.",
+        subtemas: 3,
+        ejercicios: 7,
+        icono: "🔌"
+    }
+];
+
+// Tema
+function initTheme() {
+    const saved = localStorage.getItem('md2-theme');
+    if (saved === 'light') document.body.classList.add('light-mode');
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
+    localStorage.setItem('md2-theme', isLight ? 'light' : 'dark');
+}
+
+// Calcular progreso global de un tema
+function calcularProgresoTema(temaId) {
+    try {
+        const key = `md2-progreso-${temaId}`;
+        const raw = localStorage.getItem(key);
+        if (!raw) return 0;
+        const progreso = JSON.parse(raw);
+        let totalEjercicios = 0;
+        let vistos = 0;
+        Object.values(progreso).forEach(sub => {
+            Object.values(sub).forEach(ej => {
+                totalEjercicios++;
+                if (ej.visto) vistos++;
+            });
+        });
+        return totalEjercicios > 0 ? Math.round((vistos / totalEjercicios) * 100) : 0;
+    } catch {
+        return 0;
+    }
+}
+
+// Renderizar menú
+function renderMenu() {
+    const container = document.getElementById('menu-temas');
+    container.innerHTML = CATALOGO.map(tema => {
+        const progreso = calcularProgresoTema(tema.id);
+        const disponible = tema.id === 'tema1' || tema.id === 'tema2' || tema.id === 'tema3';
+        return `
+            <a href="${disponible ? `tema.html?tema=${tema.id}` : '#'}" 
+               class="card ${disponible ? 'card-interactive' : ''} menu-tema-card" 
+               ${!disponible ? 'onclick="event.preventDefault(); alert(\'Este tema estará disponible próximamente.\')"' : ''}>
+                <div class="menu-tema-icon">${tema.icono}</div>
+                <div class="menu-tema-titulo">${tema.titulo}</div>
+                <div class="menu-tema-desc">${tema.descripcion}</div>
+                <div class="menu-tema-meta">${tema.subtemas} subtemas · ${tema.ejercicios} ejercicios</div>
+                <div class="progress-bar" style="margin-top:12px;">
+                    <div class="progress-fill" style="width:${progreso}%;"></div>
+                </div>
+                <div class="progress-label">${progreso}% completado</div>
+            </a>
+        `;
+    }).join('');
+}
+
+initTheme();
+renderMenu();
+</script>
+
+</body>
+</html>
