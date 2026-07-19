@@ -1,1 +1,886 @@
+/* ============================================================
+   MATEMÁTICAS DISCRETAS II — Sistema de Diseño Global
+   Paleta: Negros, grises, blancos y azules
+   ============================================================ */
 
+:root {
+    --bg: #0a0a0f;
+    --bg-elevated: #12121a;
+    --bg-card: #16161f;
+    --bg-hover: #1e1e2a;
+    --bg-input: #0f0f16;
+    --text: #e8e8f0;
+    --text-secondary: #9a9ab0;
+    --text-muted: #6b6b80;
+    --border: #2a2a3a;
+    --border-light: #3a3a4f;
+    --accent: #4a9eff;
+    --accent-soft: rgba(74, 158, 255, 0.12);
+    --accent-glow: rgba(74, 158, 255, 0.25);
+    --success: #3ddc84;
+    --success-soft: rgba(61, 220, 132, 0.12);
+    --warning: #ffb800;
+    --warning-soft: rgba(255, 184, 0, 0.12);
+    --danger: #ff6b6b;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace;
+}
+
+body.light-mode {
+    --bg: #f5f6f8;
+    --bg-elevated: #ffffff;
+    --bg-card: #ffffff;
+    --bg-hover: #f0f1f5;
+    --bg-input: #fafafa;
+    --text: #1a1a2e;
+    --text-secondary: #5a5a70;
+    --text-muted: #8a8a9e;
+    --border: #e0e0e8;
+    --border-light: #d0d0dc;
+    --accent: #2563eb;
+    --accent-soft: rgba(37, 99, 235, 0.10);
+    --accent-glow: rgba(37, 99, 235, 0.20);
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 1.15rem;
+    transition: background 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.logo {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.logo span { color: var(--accent); }
+
+.theme-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+.nav-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 6px 0;
+    background: none;
+    border: none;
+    font-family: inherit;
+    transition: opacity 0.2s;
+    text-decoration: none;
+}
+
+.nav-back:hover { opacity: 0.8; text-decoration: underline; }
+
+.breadcrumb {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.breadcrumb span { color: var(--text-muted); }
+.breadcrumb .current { color: var(--text-secondary); }
+
+/* ============================================================
+   TÍTULOS
+   ============================================================ */
+h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 32px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: -0.3px;
+}
+
+h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 24px 0 10px;
+    color: var(--accent);
+}
+
+h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 18px 0 8px;
+    color: var(--text);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-bottom: 28px;
+}
+
+/* ============================================================
+   VISTAS
+   ============================================================ */
+.vista {
+    display: none;
+    animation: fadeIn 0.35s ease;
+}
+
+.vista.activa { display: block; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover { border-color: var(--border-light); }
+
+.card-interactive {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-interactive::after {
+    content: "→";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.card-interactive:hover::after {
+    transform: translateY(-50%) translateX(4px);
+    color: var(--accent);
+}
+
+.card-interactive:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card-small { padding: 16px 20px; margin-bottom: 12px; }
+
+/* ============================================================
+   GRIDS
+   ============================================================ */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+/* ============================================================
+   TAGS
+   ============================================================ */
+.tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.tag-teoria { background: var(--accent-soft); color: var(--accent); }
+.tag-ejercicio { background: var(--success-soft); color: var(--success); }
+.tag-dificultad { background: var(--warning-soft); color: var(--warning); }
+
+/* ============================================================
+   DEFINICIONES
+   ============================================================ */
+.definicion {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin: 16px 0;
+}
+
+.definicion-titulo {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.definicion p, .definicion .formula-block {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.definicion .nota {
+    margin-top: 8px;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ============================================================
+   EJEMPLOS
+   ============================================================ */
+.ejemplo {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin: 16px 0;
+}
+
+.ejemplo-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.ejemplo p, .ejemplo ol, .ejemplo ul {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.ejemplo ol, .ejemplo ul { margin-left: 20px; margin-top: 6px; }
+.ejemplo li { margin-bottom: 4px; }
+
+.ejemplo .observacion {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   LEMAS
+   ============================================================ */
+.lema {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin: 16px 0;
+    border-left: 3px solid var(--warning);
+}
+
+.lema-titulo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--warning);
+    margin-bottom: 8px;
+}
+
+.lema p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* ============================================================
+   FORMULAS
+   ============================================================ */
+.formula-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin: 12px 0;
+    text-align: center;
+    font-size: 1.05rem;
+}
+
+/* ============================================================
+   ENUNCIADO
+   ============================================================ */
+.enunciado {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    padding: 16px 18px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+}
+
+.enunciado p { margin-bottom: 10px; }
+.enunciado p:last-child { margin-bottom: 0; }
+.enunciado ol, .enunciado ul {
+    margin-left: 20px;
+    margin-top: 8px;
+    color: var(--text-secondary);
+}
+.enunciado li { margin-bottom: 4px; }
+
+/* ============================================================
+   DIAGRAMAS SVG
+   ============================================================ */
+.hasse-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.hasse-svg {
+    max-width: 340px;
+    width: 100%;
+    height: auto;
+}
+
+.hasse-caption {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+
+/* ============================================================
+   TIPS
+   ============================================================ */
+.tips { margin: 16px 0; }
+
+.tip-box {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.tip-box:hover { border-color: var(--border-light); }
+
+.tip-header {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.tip-header:hover { background: var(--bg-hover); }
+
+.tip-icon {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    transition: transform 0.2s ease, color 0.2s;
+    width: 24px;
+    text-align: center;
+}
+
+.tip-box.open .tip-icon {
+    transform: rotate(45deg);
+    color: var(--accent);
+}
+
+.tip-body {
+    padding: 0 16px 14px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.65;
+    display: none;
+}
+
+.tip-box.open .tip-body { display: block; }
+
+/* ============================================================
+   SOLUCIÓN
+   ============================================================ */
+.solucion-wrapper { margin-top: 20px; }
+
+.btn-solucion {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-solucion:hover {
+    background: var(--accent-soft);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.btn-solucion:active { transform: translateY(1px); }
+
+.solucion {
+    margin-top: 16px;
+    padding: 22px;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.solucion.visible { display: block; }
+
+.solucion h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--success);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.paso {
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.paso:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.paso-titulo {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.paso-numero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.paso p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 6px;
+}
+
+.paso p:last-child { margin-bottom: 0; }
+
+.paso .formula-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* ============================================================
+   TABLAS
+   ============================================================ */
+.truth-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 1rem;
+}
+
+.truth-table th,
+.truth-table td {
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    text-align: center;
+}
+
+.truth-table th {
+    background: var(--bg-elevated);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.truth-table td {
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+}
+
+.truth-table tr:hover td { background: var(--bg-hover); }
+
+/* ============================================================
+   TEXTO
+   ============================================================ */
+p {
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+strong { color: var(--text); font-weight: 600; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.intro-text {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+/* ============================================================
+   LISTA DE EJERCICIOS
+   ============================================================ */
+.lista-ejercicios { margin-top: 24px; }
+
+.lista-ejercicios-header {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.ejercicio-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ejercicio-row:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+}
+
+.ejercicio-row-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ejercicio-numero {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.ejercicio-titulo {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.ejercicio-meta {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.ejercicio-arrow {
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    transition: color 0.2s;
+}
+
+.ejercicio-row:hover .ejercicio-arrow { color: var(--accent); }
+
+/* ============================================================
+   MENU PRINCIPAL
+   ============================================================ */
+.menu-tema-card { padding: 28px 24px; text-align: left; }
+
+.menu-tema-icon {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+
+.menu-tema-titulo {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+
+.menu-tema-desc {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.menu-tema-meta {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   SUBTEMA HEADER
+   ============================================================ */
+.subtema-header { margin-bottom: 24px; }
+
+.subtema-numero {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* ============================================================
+   PROGRESO
+   ============================================================ */
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-hover);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.progress-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* ============================================================
+   KATEX
+   ============================================================ */
+.katex { font-size: 1.15em; }
+.katex-display { margin: 16px 0 !important; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer-note {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.loading::after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin-left: 10px;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   ERROR
+   ============================================================ */
+.error-box {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid var(--danger);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    color: var(--danger);
+    font-size: 1rem;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+    .container { padding: 0 14px 40px; }
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.15rem; }
+    .card { padding: 18px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .hasse-svg { max-width: 280px; }
+}
+
+/* Nota previa / reflexión al final de teoría */
+.nota-previa {
+    font-size: 1.05rem !important;
+    line-height: 1.75;
+}
+.nota-previa p {
+    font-size: 1.05rem !important;
+    margin: 0;
+}
