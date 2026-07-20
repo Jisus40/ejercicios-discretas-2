@@ -313,7 +313,7 @@ function renderEjercicio(ej, num, subtema) {
         ej.tips.forEach(tip => {
             html += `
                 <div class="tip-box" onclick="this.classList.toggle('open')">
-                    <button class="tip-header" onclick="event.stopPropagation()">
+                    <button class="tip-header">
                         <span>💡 ${escapeHtml(tip.titulo)}</span>
                         <span class="tip-icon">+</span>
                     </button>
