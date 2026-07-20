@@ -265,7 +265,6 @@ function irASubtemaActual() {
 function seleccionarEjercicio(ejId) {
     AppState.ejercicioActual = ejId;
     AppState.scrollSubtema = window.scrollY;
-    marcarVisto(ejId);
 
     const subtema = AppState.temaData?.subtemas?.find(s => s.subtema_id === AppState.subtemaActual);
     if (!subtema) return;
@@ -353,6 +352,25 @@ function renderEjercicio(ej, num, subtema) {
         </div>
     `;
 
+    const yaCompletado = estaVisto(ej.id);
+    if (yaCompletado) {
+        html += `
+            <div style="margin-top:16px; padding:12px 16px; border-radius:8px; background:var(--success-soft); color:var(--success); font-size:14px; text-align:center;">
+                ✓ Ejercicio ya completado
+            </div>
+        `;
+    } else {
+        html += `
+            <div class="evaluacion-wrapper" id="eval-${ej.id}" style="display:none; margin-top:16px;">
+                <p style="color:var(--text-secondary); font-size:14px; margin-bottom:12px; text-align:center;">¿Tu solución coincide con la del sistema?</p>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+                    <button class="btn-eval btn-correcto" onclick="marcarEjercicioCompletado('${ej.id}', true)" style="padding:10px 18px; border-radius:8px; border:none; background:var(--success); color:#fff; font-weight:600; cursor:pointer;">✅ Sí, coincide</button>
+                    <button class="btn-eval btn-incorrecto" onclick="marcarEjercicioCompletado('${ej.id}', false)" style="padding:10px 18px; border-radius:8px; border:none; background:var(--danger); color:#fff; font-weight:600; cursor:pointer;">❌ No coincide</button>
+                </div>
+            </div>
+        `;
+    }
+
     container.innerHTML = html;
 }
 
@@ -361,7 +379,16 @@ function toggleSolucion(ejId, btn) {
     if (!sol) return;
     const visible = sol.classList.toggle('visible');
     btn.textContent = visible ? '🔒 Ocultar solución' : '🔓 Mostrar solución paso a paso';
-    if (visible) marcarSolucionVista(ejId);
+    if (visible) {
+        marcarSolucionVista(ejId);
+        const evalDiv = document.getElementById(`eval-${ejId}`);
+        if (evalDiv && !estaVisto(ejId)) {
+            evalDiv.style.display = 'block';
+        }
+    } else {
+        const evalDiv = document.getElementById(`eval-${ejId}`);
+        if (evalDiv) evalDiv.style.display = 'none';
+    }
 }
 
 // ================================================================
@@ -469,6 +496,25 @@ function marcarSolucionVista(ejId) {
         AppState.progreso[AppState.subtemaActual][ejId].solucion = true;
     }
     guardarProgreso();
+}
+
+function marcarEjercicioCompletado(ejId, correcto) {
+    marcarVisto(ejId);
+    cargarProgreso();
+    if (AppState.progreso[AppState.subtemaActual]?.[ejId]) {
+        AppState.progreso[AppState.subtemaActual][ejId].correcto = correcto;
+    }
+    guardarProgreso();
+
+    const evalDiv = document.getElementById(`eval-${ejId}`);
+    if (evalDiv) {
+        evalDiv.innerHTML = `
+            <div style="padding:12px 16px; border-radius:8px; background:var(--success-soft); color:var(--success); font-size:14px; text-align:center;">
+                ✓ Ejercicio completado${correcto ? ' — ¡Bien hecho!' : ' — Sigue practicando'}
+            </div>
+        `;
+        evalDiv.style.display = 'block';
+    }
 }
 
 function estaVisto(ejId) {
