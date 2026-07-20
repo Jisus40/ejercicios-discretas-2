@@ -39,8 +39,8 @@ const CATALOGO = [
         id: "tema1",
         titulo: "Cotas, ínfimo y supremo",
         descripcion: "Definiciones básicas de cotas inferiores, superiores, ínfimo y supremo en órdenes parciales.",
-        subtemas: 2,
-        ejercicios: 6,
+        subtemas: 5,
+        ejercicios: 20,
         icono: "📐"
     },
     {
@@ -48,15 +48,15 @@ const CATALOGO = [
         titulo: "Reticulados",
         descripcion: "Definición de reticulado, propiedades del ínfimo y supremo, reticulados distributivos y no distributivos.",
         subtemas: 4,
-        ejercicios: 8,
+        ejercicios: 23,
         icono: "🔗"
     },
     {
         id: "tema3",
         titulo: "Álgebras de Boole",
         descripcion: "Reticulados acotados, complementados y distributivos. Funciones booleanas, tablas de verdad y minimización.",
-        subtemas: 3,
-        ejercicios: 7,
+        subtemas: 7,
+        ejercicios: 40,
         icono: "🔌"
     }
 ];
@@ -78,17 +78,22 @@ function calcularProgresoTema(temaId) {
     try {
         const key = `md2-progreso-${temaId}`;
         const raw = localStorage.getItem(key);
-        if (!raw) return 0;
-        const progreso = JSON.parse(raw);
-        let totalEjercicios = 0;
+        const progreso = raw ? JSON.parse(raw) : {};
+
+        // Total real de ejercicios según el catálogo
+        const tema = CATALOGO.find(t => t.id === temaId);
+        const totalEjercicios = tema ? tema.ejercicios : 0;
+        if (totalEjercicios === 0) return 0;
+
+        // Contar solo los ejercicios marcados como vistos
         let vistos = 0;
         Object.values(progreso).forEach(sub => {
             Object.values(sub).forEach(ej => {
-                totalEjercicios++;
                 if (ej.visto) vistos++;
             });
         });
-        return totalEjercicios > 0 ? Math.round((vistos / totalEjercicios) * 100) : 0;
+
+        return Math.min(100, Math.round((vistos / totalEjercicios) * 100));
     } catch {
         return 0;
     }
@@ -121,8 +126,5 @@ initTheme();
 renderMenu();
 </script>
 
-
-<!-- commit de prueba para desplegar la web en github pages adklñfasdjfklñjasdfjkadjfksdjdklfjadjfklñdjfkjadkfjdfjdjfklfjsdklñfjsd-->
 </body>
 </html>
-
